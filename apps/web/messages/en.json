@@ -260,6 +260,7 @@
   "rewards.error.capBelowReward": "The daily limit can’t go below an active reward’s payout.",
   "rewards.error.streakTooShort": "This reward needs a longer weekly quest streak — complete a quest every week to build it.",
   "rewards.error.streakUnset": "Streak-gated rewards aren’t set up on this contract yet.",
+  "rewards.error.treasury": "Rewards are temporarily out of funds. Please try again later.",
   "rewards.cashout.label": "Cash out USDC to local currency via {domain}",
   "rewards.cashout.placeholder": "USDC amount",
   "rewards.cashout.button": "Cash out",

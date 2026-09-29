@@ -114,6 +114,39 @@ fn claim_reward_reads_earned_and_pays_stored_amount() {
 }
 
 #[test]
+fn underfunded_treasury_returns_typed_error_and_can_be_retried() {
+    let f = setup();
+    let user = Address::generate(&f.env);
+    let token = token::Client::new(&f.env, &f.usdc);
+    f.rewards.add_reward(&1, &50, &200);
+    f.rewards.set_daily_cap(&200);
+    f.rewards.set_reward_supply(&1, &1);
+    f.rep.award_xp(&f.attester, &user, &2, &100);
+
+    // Drain the treasury, then also check a nonzero balance one stroop short.
+    token.transfer(&f.rewards_id, &Address::generate(&f.env), &1_000);
+    for balance in [0, 199] {
+        token::StellarAssetClient::new(&f.env, &f.usdc).mint(&f.rewards_id, &balance);
+        assert_eq!(
+            f.rewards.try_claim_reward(&user, &1),
+            Err(Ok(Error::TreasuryInsufficient))
+        );
+        assert!(!f.rewards.is_claimed(&1, &user));
+        assert_eq!(f.rewards.get_reward_stats(&1).claims, 0);
+        assert_eq!(token.balance(&user), 0);
+        assert_eq!(token.balance(&f.rewards_id), balance);
+    }
+
+    // Exactly enough succeeds; the failed attempts consumed neither cap nor supply.
+    token::StellarAssetClient::new(&f.env, &f.usdc).mint(&f.rewards_id, &1);
+    f.rewards.claim_reward(&user, &1);
+    assert_eq!(token.balance(&user), 200);
+    assert_eq!(token.balance(&f.rewards_id), 0);
+    assert!(f.rewards.is_claimed(&1, &user));
+    assert_eq!(f.rewards.get_reward_stats(&1).claims, 1);
+}
+
+#[test]
 fn get_rewards_lists_the_table() {
     let f = setup();
     f.rewards.add_reward(&1u32, &30u64, &50i128);

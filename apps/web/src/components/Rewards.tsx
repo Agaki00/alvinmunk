@@ -42,6 +42,7 @@ export function buildRewardErrors(t: (key: string) => string): Record<number, st
     17: t('rewards.error.capBelowReward'),
     18: t('rewards.error.streakTooShort'),
     19: t('rewards.error.streakUnset'),
+    100: t('rewards.error.treasury'),
   };
 }
 

@@ -54,6 +54,8 @@ pub enum Error {
     StreakTooShort = 18, // live weekly quest streak below the reward's minimum
     QuestRegistryNotSet = 19, // a streak gate needs `set_quest_registry` first
     SelfTip = 20,   // `tip` sender == receiver: a `tipped` event that moves no value
+    // New errors use 100+ to avoid the SAC's 1-13 error range. Keep legacy codes stable.
+    TreasuryInsufficient = 100,
 }
 
 /// `quest_registry::Streak`, decoded from the cross-contract `get_streak` read (the field
@@ -407,7 +409,11 @@ impl RewardsContract {
 
         let usdc: Address = env.storage().instance().get(&DataKey::Usdc).unwrap();
         let treasury = env.current_contract_address();
-        token::Client::new(&env, &usdc).transfer(&treasury, &to, &entry.amount);
+        let token = token::Client::new(&env, &usdc);
+        if token.balance(&treasury) < entry.amount {
+            panic_with_error!(&env, Error::TreasuryInsufficient);
+        }
+        token.transfer(&treasury, &to, &entry.amount);
 
         // The running claim count lets an indexer show "N of M claimed" without aggregating.
         env.events().publish(

@@ -260,6 +260,7 @@
   "rewards.error.capBelowReward": "Günlük limit, aktif bir ödülün ödemesinin altına inemez.",
   "rewards.error.streakTooShort": "Bu ödül daha uzun bir haftalık görev serisi istiyor — seriyi büyütmek için her hafta bir görev tamamla.",
   "rewards.error.streakUnset": "Seriye bağlı ödüller bu kontratta henüz kurulmadı.",
+  "rewards.error.treasury": "Ödül hazinesinde geçici olarak yeterli bakiye yok. Lütfen daha sonra tekrar deneyin.",
   "rewards.cashout.label": "USDC'yi {domain} üzerinden yerel para birimine çek",
   "rewards.cashout.placeholder": "USDC miktarı",
   "rewards.cashout.button": "Nakit çek",
