@@ -126,8 +126,13 @@ fn underfunded_treasury_returns_typed_error_and_can_be_retried() {
         token::StellarAssetClient::new(&f.env, &f.usdc).mint(&f.rewards_id, &balance);
         assert_eq!(
             f.rewards.try_claim_reward(&user, &1),
-            Err(Ok(Error::TreasuryInsufficient))
+            Err(Ok(contract_err(Error::TreasuryInsufficient)))
         );
+        // The status view predicts the same refusal.
+        let (rows, _) = f.rewards.get_rewards_for(&user);
+        let row = rows.iter().find(|r| r.entry.id == 1).unwrap();
+        assert!(!row.eligible);
+        assert_eq!(row.reason, Error::TreasuryInsufficient as u32);
         assert!(!f.rewards.is_claimed(&1, &user));
         assert_eq!(f.rewards.get_reward_stats(&1).claims, 0);
         assert_eq!(token.balance(&user), 0);

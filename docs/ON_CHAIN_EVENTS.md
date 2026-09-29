@@ -1434,9 +1434,11 @@ today in stroops — `get_daily_cap() - get_daily_paid()`, floored at `0`, or `-
 daily cap is set. `reason` runs `claim_reward`'s checks in its order without the
 transfer, so it is the first error the claim would revert with: `Paused` (#5), `Frozen`
 (#10), `NotFunded` (#12), `RewardInactive` (#7), `AlreadyClaimed` (#4), `RewardExhausted`
-(#13), `BelowThreshold` (#3), `QuestRegistryNotSet` (#19), `StreakTooShort` (#18), then
-`DailyCapExceeded` (#9). The first three are per wallet and so the same on every row. The
-Earned-XP and streak cross-reads run at most once per call. The view is read-only and
+(#13), `BelowThreshold` (#3), `QuestRegistryNotSet` (#19), `StreakTooShort` (#18),
+`DailyCapExceeded` (#9), then `TreasuryInsufficient` (#100) when the treasury's USDC
+balance can't cover the payout (#147; numbered above the SAC's 1–13 range). The first three
+are per wallet and so the same on every row. The Earned-XP, streak and treasury-balance
+reads run at most once per call. The view is read-only and
 takes no auth. A contract deployed before this view has no `get_rewards_for`.
 
 ### Daily cap (`get_daily_cap` / `get_daily_paid`)
