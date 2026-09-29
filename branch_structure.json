@@ -1,0 +1,18 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "fix/147-treasury-insufficient",
+    "main",
+    "origin"
+  ],
+  "parent": {
+    "fix/147-treasury-insufficient": "main",
+    "main": null,
+    "origin": "main"
+  },
+  "order": [
+    "main",
+    "fix/147-treasury-insufficient",
+    "origin"
+  ]
+}
